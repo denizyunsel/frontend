@@ -21,6 +21,7 @@ export default function Login() {
 
         const login = e => {
             e.preventDefault();
+            if (validate())
             console.log(values);
         }
 
@@ -51,13 +52,15 @@ export default function Login() {
                                 name = "email"
                                 value={values.email}
                                 onChange={handleInputChange}
-                                variant ="outlined"/>  
+                                variant ="outlined"
+                                {...(errors.email && {error : true, helperText:errors.email})}/>  
                             <TextField 
                                 label ="Name"
                                 name = "name"
                                 value={values.name}
                                 onChange={handleInputChange}
-                                variant ="outlined"/>
+                                variant ="outlined"
+                                {...(errors.name && {error : true, helperText:errors.name})}/>
                             <Button 
                                 type='submit'
                                 variant='contained'
