@@ -1,16 +1,24 @@
+import React, { useEffect, } from 'react'
 import { Button, Card, CardContent, TextField, Typography } from '@mui/material'
-import { Box, width } from '@mui/system'
+import { Box ,width} from '@mui/system'
 import Center from './Center'
-import React, { useState } from 'react'
 import useForm from '../hooks/useForm'
 import { createAPIEndpoint, ENDPOINTS } from '../api'
+import  useStateContext  from '../hooks/useStateContext'
+import { useNavigate } from 'react-router'
 
-const getFreshModelObject= () =>({
+
+const getFreshModel= () =>({
     name: '',
     email: ''
 })
 
+
 export default function Login() {
+
+    const { context, setContext, resetContext } = useStateContext();
+    const navigate = useNavigate()
+ 
 
     const {
         values,
@@ -18,18 +26,32 @@ export default function Login() {
         errors,
         setErrors,
         handleInputChange
-        } = useForm (getFreshModelObject); 
+    } = useForm(getFreshModel);
+    
+    useEffect(() => {
+        resetContext()
+    }, [])
 
-        const login = e => {
-            e.preventDefault();
-            if(validate())
-            createAPIEndpoint(ENDPOINTS.participant)
-            .post(values)
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
+    
 
 
-        }
+const login = e => {
+    e.preventDefault();
+    if(validate())
+    createAPIEndpoint(ENDPOINTS.participant)
+    .post(values)
+    .then(res => {
+        setContext({participantId: res.data.participantId})
+        navigate('/quiz')
+        
+        
+    })
+    .catch(err => console.log(err))
+
+
+}
+
+
 
         const validate = ()=>{
             let temp ={}
@@ -41,6 +63,7 @@ export default function Login() {
 
     return (
         <Center> 
+
             <Card sx={{
                 width: 400
             }}>
@@ -52,7 +75,7 @@ export default function Login() {
                             width: '90%'
                         }
                     }}>
-                        <form noValidate onSubmit={login} >
+                        <form noValidate  autoComplete = "on"onSubmit={login} >
                             <TextField 
                                 label ="Email"
                                 name = "email"
@@ -81,4 +104,6 @@ export default function Login() {
         </Center>
 
     ) 
-}
+
+                }
+                           
